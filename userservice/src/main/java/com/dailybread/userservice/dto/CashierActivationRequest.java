@@ -10,4 +10,5 @@ public class CashierActivationRequest {
     private String email;
     private String activationToken;
     private String password;
+    private String password2;
 }

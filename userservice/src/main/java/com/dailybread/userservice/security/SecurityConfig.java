@@ -66,12 +66,12 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> configurer
                 .requestMatchers(HttpMethod.GET, "/").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/signup").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/activate").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/register").hasAuthority("admin")
-                .requestMatchers(HttpMethod.GET, "/api/cashiers").hasAnyAuthority("admin")
-                .requestMatchers(HttpMethod.DELETE, "/api/cashiers/{email}").hasAnyAuthority("admin")
+                .requestMatchers(HttpMethod.POST, "/api/user/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user/signup").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user/activate").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user/register").hasAuthority("admin")
+                .requestMatchers(HttpMethod.GET, "/api/user/cashiers").hasAnyAuthority("admin")
+                .requestMatchers(HttpMethod.DELETE, "/api/user/cashiers/{email}").hasAnyAuthority("admin")
 
         )
                 .addFilterBefore(jwtRequestFilter,

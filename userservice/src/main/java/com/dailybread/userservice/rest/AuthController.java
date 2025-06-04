@@ -1,4 +1,4 @@
-package com.dailybread.userservice.service;
+package com.dailybread.userservice.rest;
 
 import com.dailybread.userservice.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/user/auth")
 public class AuthController {
     @Autowired
     private AuthService authService;

@@ -24,7 +24,7 @@ import com.dailybread.userservice.service.UserService;
 import jakarta.websocket.server.PathParam;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserRestController {
 
     private UserService userService;

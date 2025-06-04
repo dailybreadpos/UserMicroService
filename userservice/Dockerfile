@@ -2,7 +2,7 @@
 # Multi-stage build
 # Stage 1: Build the application
 # Use official lightweight JDK 21 base image
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:17-jdk-alpine
 
 # Set the working directory inside the container
 WORKDIR /app

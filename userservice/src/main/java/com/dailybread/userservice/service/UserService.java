@@ -17,4 +17,10 @@ public interface UserService {
     List<User> getAllCashiers();
 
     String deleteCashier(String email);
+
+    public String forgotPassword(String email);
+
+    public boolean verifyOtp(String email, String otp);
+
+    public User resetPassword(String email, String newPassword);
 }

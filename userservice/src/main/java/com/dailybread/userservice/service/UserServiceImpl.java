@@ -18,6 +18,9 @@ import com.dailybread.userservice.dto.CashierActivationRequest;
 import com.dailybread.userservice.model.User;
 import com.dailybread.userservice.repository.UserRepository;
 import com.dailybread.userservice.util.JWT;
+import com.dailybread.userservice.util.OTP;
+import com.dailybread.userservice.util.OTPUtil;
+import com.dailybread.userservice.exception.UserNotFoundException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -148,5 +151,83 @@ public class UserServiceImpl implements UserService {
             return "Cashier not found";
         }
 
+    }
+
+    @Override
+    public String forgotPassword(String email) {
+
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(email + " not registed with us");
+        }
+        OTP otp = OTPUtil.generateOtp(6, 5);
+        User existingUser = user.get();
+        existingUser.setOtp(otp);
+        // existingUser.setOtpExpiry(otp.getExpiryTime());
+        userRepository.save(existingUser);
+        System.out.println("OTP generated for user: " + email + " is " + otp.getOtp());
+        sendMail(email, otp);
+        return otp.getOtp();
+    }
+
+    @Override
+    public boolean verifyOtp(String email, String otp) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("Some error occurred while verifying. Retry again later.");
+        }
+        User existingUser = user.get();
+        OTP existingOtp = existingUser.getOtp();
+
+        if (existingOtp == null || !existingOtp.getOtp().equals(otp)) {
+            System.out.println("Invalid OTP for user: " + email);
+            return false;
+        }
+
+        // Check if the OTP is expired
+        if (existingOtp.isExpired()) {
+            System.out.println("OTP expired for user: " + email);
+            return false;
+        }
+
+        // OTP is valid, clear it after verification
+        existingUser.setAuthenticatedForPasswordReset(true);
+        existingUser.setOtp(null);
+        userRepository.save(existingUser);
+
+        System.out.println("OTP verified successfully for user: " + email);
+        return true;
+    }
+
+    @Override
+    public User resetPassword(String email, String newPassword) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("Some error occurred while resetting password. Retry again later.");
+        }
+
+        User existingUser = user.get();
+        if (!existingUser.isAuthenticatedForPasswordReset()) {
+            throw new UserNotFoundException("User not authenticated for password reset: " + email);
+        }
+
+        existingUser.setPassword(passwordEncoder.encode(newPassword));
+        existingUser.setAuthenticatedForPasswordReset(false); // Reset the authentication flag
+        return userRepository.save(existingUser);
+    }
+
+    private void sendMail(String to, OTP otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setFrom("11603002276pema@gmail.com");
+        message.setSubject("OTP for Password Reset");
+        message.setText("Your OTP for password reset is: " + otp.getOtp() + ". It is valid for 5 minutes.");
+        try {
+            mailSender.send(message);
+            System.out.println("OTP sent to " + to);
+        } catch (Exception e) {
+            System.out.println("Error sending OTP email: " + e.getMessage());
+            throw new RuntimeErrorException(null, "Failed to send OTP email");
+        }
     }
 }

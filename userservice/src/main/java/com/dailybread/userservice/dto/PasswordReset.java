@@ -5,10 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequest {
-
+public class PasswordReset {
     private String email;
     private String password;
-    private String recaptchaToken;
-
+    private String confirmPassword;
 }

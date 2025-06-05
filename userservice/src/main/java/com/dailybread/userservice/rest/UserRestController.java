@@ -20,8 +20,10 @@ import com.dailybread.userservice.dto.CashierActivationRequest;
 import com.dailybread.userservice.dto.LoginRequest;
 import com.dailybread.userservice.model.User;
 import com.dailybread.userservice.service.UserService;
-
+import com.dailybread.userservice.dto.OTPRequest;
+import com.dailybread.userservice.dto.PasswordReset;
 import jakarta.websocket.server.PathParam;
+import com.dailybread.userservice.exception.UserNotFoundException;
 
 @RestController
 @RequestMapping("/api")
@@ -107,6 +109,48 @@ public class UserRestController {
         } else {
             response.put("message", res);
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody User user) {
+
+        try {
+            userService.forgotPassword(user.getEmail());
+            return ResponseEntity.ok("OTP sent to " + user.getEmail());
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error generating OTP: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody OTPRequest req) {
+        try {
+            boolean isValid = userService.verifyOtp(req.getEmail(), req.getOtp());
+            if (isValid) {
+                return ResponseEntity.ok("OTP verified successfully");
+            } else {
+                return ResponseEntity.badRequest().body("Invalid OTP");
+            }
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error verifying OTP: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordReset req) {
+        try {
+            System.out.println("Resetting password for user: " + req.getEmail() + req.getPassword());
+            User updatedUser = userService.resetPassword(req.getEmail(), req.getPassword());
+            return ResponseEntity.ok(updatedUser);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error resetting password: " + e.getMessage());
         }
     }
 }

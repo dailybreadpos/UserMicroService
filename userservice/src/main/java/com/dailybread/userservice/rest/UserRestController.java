@@ -26,7 +26,7 @@ import jakarta.websocket.server.PathParam;
 import com.dailybread.userservice.exception.UserNotFoundException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserRestController {
 
     private UserService userService;

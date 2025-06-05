@@ -69,9 +69,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/user/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/user/signup").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/user/activate").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user/register").hasAuthority("admin")
-                .requestMatchers(HttpMethod.GET, "/api/user/cashiers").hasAnyAuthority("admin")
-                .requestMatchers(HttpMethod.DELETE, "/api/user/cashiers/{email}").hasAnyAuthority("admin")
+                .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/user/cashiers").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/user/cashiers/{email}").permitAll()
 
         )
                 .addFilterBefore(jwtRequestFilter,

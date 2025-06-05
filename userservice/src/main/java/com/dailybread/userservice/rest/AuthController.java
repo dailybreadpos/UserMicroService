@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.dailybread.userservice.service.AuthService;
 import com.dailybread.userservice.service.JWTUtil;
+import com.dailybread.userservice.service.RecaptchaService;
 import com.dailybread.userservice.dto.LoginRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

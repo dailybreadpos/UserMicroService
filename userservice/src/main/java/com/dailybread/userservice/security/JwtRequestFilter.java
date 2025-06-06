@@ -44,6 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         }
+        System.out.println("JWT from cookies: " + jwt);
         if (jwt != null) {
             try {
                 username = jwtUtil.extractUsername(jwt);

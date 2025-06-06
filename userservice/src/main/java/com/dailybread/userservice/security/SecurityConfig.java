@@ -69,9 +69,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/user/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/user/signup").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/user/activate").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/user/cashiers").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/user/cashiers/{email}").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user/register").hasAuthority("admin")
+                .requestMatchers(HttpMethod.GET, "/api/user/cashiers").hasAuthority("admin")
+                .requestMatchers(HttpMethod.DELETE, "/api/user/cashiers/{email}").hasAuthority("admin")
+                .requestMatchers(HttpMethod.POST, "/api/user/forgot-password").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user/verify-otp").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user/reset-password").permitAll()
 
         )
                 .addFilterBefore(jwtRequestFilter,

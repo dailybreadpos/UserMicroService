@@ -55,7 +55,7 @@ public class AuthController {
         cookie.setMaxAge(24 * 60 * 60);
 
         response.setHeader("Set-Cookie",
-                String.format("token=%s; Max-Age=86400; Path=/; Secure;HttpOnly; SameSite=Strict", jwt));
+                String.format("token=%s; Max-Age=86400; Path=/;HttpOnly; SameSite=Lazy", jwt));
 
         Map<String, Object> body = new HashMap<>();
         // userDetails.getAuthorities().forEach(authority -> {
